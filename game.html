@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Жека Вайбкодер — Какашка-вайбкодер 💩</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Comic Sans MS", "Comic Neue", system-ui, sans-serif;
+      background: linear-gradient(180deg, #fde68a, #fca5a5);
+      color: #3b2f2f; text-align: center; min-height: 100vh;
+    }
+    header { padding: 2rem 1rem 1rem; }
+    h1 { font-size: clamp(2rem, 6vw, 4rem); text-shadow: 3px 3px 0 #fff; }
+    .sub { font-size: 1.1rem; margin-top: .5rem; }
+    .disclaimer { font-size: .85rem; opacity: .7; margin-top: .4rem; }
+    main { max-width: 960px; margin: 0 auto; padding: 0 1rem 2rem; }
+    section { background: #fff8; border: 3px dashed #7c4a2d; border-radius: 20px; padding: 1.5rem; margin: 1.5rem 0; }
+    h2 { margin-bottom: .8rem; }
+    .facts { list-style: none; text-align: left; display: grid; gap: .6rem; }
+    .facts li { background: #fff; border-radius: 12px; padding: .7rem 1rem; }
+
+    #hud { display: flex; justify-content: space-around; font-size: 1.4rem; font-weight: bold; margin-bottom: .8rem; flex-wrap: wrap; gap: .5rem; }
+    #field {
+      position: relative; height: 460px; border-radius: 16px; overflow: hidden;
+      background: linear-gradient(180deg, #bae6fd 0%, #e0f2fe 75%, #86efac 75%);
+      touch-action: none; user-select: none;
+    }
+    #zheka {
+      position: absolute; width: 90px; height: 90px; font-size: 70px; line-height: 90px;
+      cursor: grab; text-align: center; will-change: transform;
+    }
+    #zheka .label { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 12px; line-height: 1; white-space: nowrap; background: #fff; padding: 2px 6px; border-radius: 8px; }
+    #bin { position: absolute; bottom: 20px; width: 110px; height: 120px; font-size: 100px; line-height: 120px; text-align: center; transition: right .6s ease; }
+    #speech { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: #fff; border-radius: 14px; padding: .5rem 1rem; font-size: 1.05rem; max-width: 90%; }
+    .pop { position: absolute; font-weight: bold; font-size: 1.6rem; color: #15803d; pointer-events: none; animation: up 1s ease-out forwards; }
+    @keyframes up { to { transform: translateY(-80px); opacity: 0; } }
+    .hint { margin-top: .8rem; font-size: .95rem; }
+    button { font: inherit; font-weight: bold; padding: .6rem 1.4rem; border-radius: 999px; border: none; background: #7c4a2d; color: #fff; cursor: pointer; margin-top: .8rem; }
+    a { color: #7c4a2d; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>💩 Жека Вайбкодер 💩</h1>
+    <p class="sub">Официально признанный какашка-вайбкодер всех времён</p>
+    <p class="disclaimer">Персонаж вымышленный. Любые совпадения случайны.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>📜 Досье</h2>
+      <ul class="facts">
+        <li>💩 Жека — какашка-вайбкодер: пишет промпт «сделай хорошо» и уходит пить чай.</li>
+        <li>🤖 Его ИИ уже трижды просил перевод в другой отдел.</li>
+        <li>🐛 Каждый его коммит приносит в мир 5 новых багов и одну фичу (случайно).</li>
+        <li>🗑️ Единственное место, где его код работает идеально, — мусорное ведро.</li>
+        <li>💸 За каждое отправленное в мусорку приложение Жеки платят премию. Проверьте ниже!</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>🗑️ Игра: Отправь Жеку в мусорку</h2>
+      <div id="hud">
+        <span>💰 <span id="money">0</span> ₽</span>
+        <span>🎯 Попаданий: <span id="hits">0</span></span>
+        <span>🔥 Комбо: x<span id="combo">1</span></span>
+      </div>
+      <div id="field">
+        <div id="speech">Схвати Жеку и швырни его в мусорку!</div>
+        <div id="bin">🗑️</div>
+        <div id="zheka"><span class="label">Жека</span>💩</div>
+      </div>
+      <p class="hint">Зажми Жеку мышкой или пальцем, разгонись и отпусти. За попадание платят деньги, а за попадания подряд даётся комбо. После каждого броска мусорка переезжает.</p>
+      <button id="reset">Начать заново</button>
+    </section>
+
+    <p><a href="index.html">← На главную</a></p>
+  </main>
+
+  <script>
+    const field = document.getElementById("field");
+    const zheka = document.getElementById("zheka");
+    const bin = document.getElementById("bin");
+    const speech = document.getElementById("speech");
+    const $ = id => document.getElementById(id);
+
+    const SIZE = 90, GRAVITY = 1500, BOUNCE = 0.45;
+    let x, y, vx, vy, dragging = false, flying = false, scored = false;
+    let money = 0, hits = 0, combo = 1, history = [];
+
+    const quotesHit = ["Это не баг, это фича!", "Я просто рефакторюсь…", "ИИ, спаси!", "Ну и ладно, зато вайб хороший", "В мусорке тоже есть Wi-Fi?", "Закоммить меня обратно!"];
+    const quotesMiss = ["Ха, промазал! Как мой код мимо тестов", "Я неуловимый, как баг в проде", "Даже ИИ лучше целится", "Мимо! Деплой отменяется"];
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+
+    function W() { return field.clientWidth; }
+    function H() { return field.clientHeight; }
+    function binRect() {
+      const f = field.getBoundingClientRect(), b = bin.getBoundingClientRect();
+      return { left: b.left - f.left, right: b.right - f.left, top: b.top - f.top };
+    }
+    function moveBin() {
+      const right = 20 + Math.random() * Math.max(0, W() * 0.55 - 130);
+      bin.style.right = right + "px";
+    }
+    function spawn() {
+      x = 30; y = H() * 0.75 - SIZE; vx = vy = 0; flying = false; scored = false;
+      render();
+    }
+    function render() { zheka.style.transform = `translate(${x}px, ${y}px) rotate(${flying ? (x * 3) % 360 : 0}deg)`; }
+
+    function pop(text, px, py, color) {
+      const p = document.createElement("div");
+      p.className = "pop"; p.textContent = text;
+      p.style.left = px + "px"; p.style.top = py + "px";
+      if (color) p.style.color = color;
+      field.appendChild(p);
+      p.addEventListener("animationend", () => p.remove());
+    }
+
+    function score() {
+      scored = true; flying = false; hits++;
+      const reward = 100 * combo;
+      money += reward; combo = Math.min(combo + 1, 10);
+      $("money").textContent = money; $("hits").textContent = hits; $("combo").textContent = combo;
+      const r = binRect();
+      pop(`+${reward} ₽`, r.left, r.top - 30);
+      speech.textContent = pick(quotesHit);
+      zheka.style.opacity = 0;
+      bin.animate([{ transform: "scale(1)" }, { transform: "scale(1.25) rotate(-8deg)" }, { transform: "scale(1)" }], { duration: 400 });
+      setTimeout(() => { zheka.style.opacity = 1; moveBin(); spawn(); }, 700);
+    }
+    function miss() {
+      flying = false; combo = 1; $("combo").textContent = combo;
+      speech.textContent = pick(quotesMiss);
+      pop("Мимо!", x, y - 20, "#b91c1c");
+      setTimeout(spawn, 600);
+    }
+
+    let last = 0;
+    function tick(t) {
+      const dt = Math.min((t - last) / 1000, 0.03); last = t;
+      if (flying && !scored) {
+        vy += GRAVITY * dt; x += vx * dt; y += vy * dt;
+        const ground = H() * 0.75 - SIZE + 40;
+        if (x < 0) { x = 0; vx = -vx * BOUNCE; }
+        if (x > W() - SIZE) { x = W() - SIZE; vx = -vx * BOUNCE; }
+        if (y < 0) { y = 0; vy = -vy * BOUNCE; }
+
+        // Score when Zheka's center drops into the bin mouth while falling.
+        const r = binRect(), cx = x + SIZE / 2, cy = y + SIZE / 2;
+        if (vy > 0 && cx > r.left + 10 && cx < r.right - 10 && cy > r.top && cy < r.top + 60) score();
+        else if (y >= ground) {
+          y = ground; vy = -vy * BOUNCE; vx *= 0.7;
+          if (Math.abs(vy) < 120) miss();
+        }
+        render();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    zheka.addEventListener("pointerdown", e => {
+      if (flying) return;
+      dragging = true; zheka.setPointerCapture(e.pointerId); zheka.style.cursor = "grabbing";
+      history = [];
+    });
+    zheka.addEventListener("pointermove", e => {
+      if (!dragging) return;
+      const f = field.getBoundingClientRect();
+      x = Math.max(0, Math.min(W() - SIZE, e.clientX - f.left - SIZE / 2));
+      y = Math.max(0, Math.min(H() - SIZE, e.clientY - f.top - SIZE / 2));
+      history.push({ x, y, t: performance.now() });
+      if (history.length > 6) history.shift();
+      render();
+    });
+    zheka.addEventListener("pointerup", () => {
+      if (!dragging) return;
+      dragging = false; zheka.style.cursor = "grab";
+      if (history.length >= 2) {
+        const a = history[0], b = history[history.length - 1];
+        const dt = Math.max((b.t - a.t) / 1000, 0.016);
+        vx = Math.max(-2500, Math.min(2500, (b.x - a.x) / dt));
+        vy = Math.max(-2500, Math.min(2500, (b.y - a.y) / dt));
+      } else { vx = vy = 0; }
+      flying = true;
+      speech.textContent = "Аааа! Мой вайб!";
+    });
+
+    $("reset").addEventListener("click", () => {
+      money = hits = 0; combo = 1;
+      $("money").textContent = 0; $("hits").textContent = 0; $("combo").textContent = 1;
+      speech.textContent = "Схвати Жеку и швырни его в мусорку!";
+      moveBin(); spawn();
+    });
+
+    moveBin(); spawn();
+    requestAnimationFrame(t => { last = t; tick(t); });
+    window.addEventListener("resize", spawn);
+  </script>
+</body>
+</html>
