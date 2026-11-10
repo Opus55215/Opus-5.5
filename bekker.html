@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Евгений Беккер — вайбкодер года 🗑️</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Comic Sans MS", "Comic Neue", system-ui, sans-serif;
+      color: #1f2937; text-align: center; min-height: 100vh;
+      background: linear-gradient(135deg, #a78bfa, #f472b6, #fbbf24, #34d399);
+      background-size: 400% 400%; animation: bg 14s ease infinite;
+    }
+    @keyframes bg { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    header { padding: 2.5rem 1rem 1rem; color: #fff; }
+    h1 { font-size: clamp(2.2rem, 7vw, 4.5rem); text-shadow: 4px 4px 0 #000; line-height: 1.1; }
+    .sub { font-size: 1.25rem; margin-top: .6rem; text-shadow: 2px 2px 0 #000; }
+    .disclaimer { font-size: .85rem; margin-top: .4rem; opacity: .9; text-shadow: 1px 1px 0 #000; }
+    main { max-width: 980px; margin: 0 auto; padding: 0 1rem 2rem; }
+    section { background: #fffd; border: 4px solid #000; border-radius: 22px; padding: 1.5rem; margin: 1.5rem 0; box-shadow: 8px 8px 0 #000; }
+    h2 { margin-bottom: .8rem; font-size: 1.7rem; }
+    .facts { list-style: none; text-align: left; display: grid; gap: .6rem; }
+    .facts li { background: #f3f4f6; border-radius: 12px; padding: .7rem 1rem; }
+    button {
+      font: inherit; font-weight: bold; font-size: 1.15rem; padding: .7rem 1.6rem; border-radius: 999px;
+      border: 3px solid #000; background: #fbbf24; cursor: pointer; box-shadow: 0 5px 0 #000; margin: .4rem;
+    }
+    button:active { transform: translateY(4px); box-shadow: 0 1px 0 #000; }
+    #joke { font-size: 1.25rem; min-height: 3.2em; margin: .6rem 0 1rem; }
+
+    #hud { display: flex; justify-content: space-around; flex-wrap: wrap; gap: .5rem; font-size: 1.25rem; font-weight: bold; margin-bottom: .8rem; }
+    #field {
+      position: relative; height: 480px; border-radius: 16px; overflow: hidden; border: 3px solid #000;
+      background: linear-gradient(180deg, #7dd3fc 0%, #e0f2fe 78%, #4ade80 78%, #16a34a 100%);
+      touch-action: none; user-select: none;
+    }
+    #becker { position: absolute; left: 0; top: 0; width: 90px; height: 110px; cursor: grab; will-change: transform; z-index: 3; }
+    #becker .tag { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 12px; white-space: nowrap; background: #000; color: #fff; padding: 2px 7px; border-radius: 8px; }
+    #bin { position: absolute; left: 0; width: 110px; height: 130px; z-index: 2; }
+    #lid { transform-origin: 8px 30px; transition: transform .15s; }
+    #bin.open #lid { transform: rotate(-70deg); }
+    #speech { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: #fff; border: 3px solid #000; border-radius: 14px; padding: .4rem 1rem; font-size: 1rem; max-width: 92%; z-index: 4; }
+    #wind { position: absolute; top: 56px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: .95rem; z-index: 4; }
+    .pop { position: absolute; font-weight: bold; font-size: 1.6rem; pointer-events: none; animation: up 1s ease-out forwards; z-index: 5; text-shadow: 2px 2px 0 #fff; }
+    @keyframes up { to { transform: translateY(-90px); opacity: 0; } }
+    .bit { position: absolute; font-size: 1.6rem; pointer-events: none; z-index: 5; }
+    .hint { margin-top: .8rem; font-size: .95rem; }
+    footer { color: #fff; padding: 1rem 1rem 2.5rem; text-shadow: 1px 1px 0 #000; }
+    a { color: #fff; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎧 Евгений Беккер 🎧<br />вайбкодер года</h1>
+    <p class="sub">Пишет код силой мысли. Иногда даже работающий.</p>
+    <p class="disclaimer">Дружеская шутка. Ни один вайбкодер в реальности не пострадал.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>📜 Досье на Беккера</h2>
+      <ul class="facts">
+        <li>🤖 Евгений не пишет код — он пишет «сделай красиво, плиз» и идёт за кофе.</li>
+        <li>🧠 Его любимый язык программирования — русский.</li>
+        <li>🐛 Баги в его проектах не исправляются, а «переосмысляются как фичи».</li>
+        <li>🔁 Его рабочий цикл: промпт → «не то» → промпт → «опять не то» → «ладно, и так сойдёт».</li>
+        <li>📦 node_modules у него весит больше, чем вся его музыкальная коллекция.</li>
+        <li>🗑️ Лучшее место для тестирования вайбкода — мусорка. Проверьте сами ниже!</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>😂 Шуткомёт Беккера</h2>
+      <p id="joke">Жми кнопку — будет смешно. Возврат денег не предусмотрен.</p>
+      <button id="laugh">ХА-ХА 🤣</button>
+    </section>
+
+    <section>
+      <h2>🗑️ Игра: Кинь Беккера в мусорку</h2>
+      <div id="hud">
+        <span>🎯 Очки: <span id="score">0</span></span>
+        <span>🔥 Комбо: x<span id="combo">1</span></span>
+        <span>🏆 Уровень: <span id="level">1</span></span>
+        <span>🥇 Рекорд: <span id="best">0</span></span>
+      </div>
+      <div id="field">
+        <div id="speech">Хватай Беккера и швыряй в мусорку!</div>
+        <div id="wind"></div>
+        <svg id="bin" viewBox="0 0 110 130" aria-label="мусорка">
+          <rect x="14" y="34" width="82" height="92" rx="8" fill="#64748b" stroke="#000" stroke-width="4"/>
+          <path d="M34 48v66M55 48v66M76 48v66" stroke="#334155" stroke-width="5" stroke-linecap="round"/>
+          <g id="lid">
+            <rect x="6" y="22" width="98" height="14" rx="5" fill="#94a3b8" stroke="#000" stroke-width="4"/>
+            <rect x="44" y="12" width="22" height="12" rx="4" fill="#94a3b8" stroke="#000" stroke-width="4"/>
+          </g>
+        </svg>
+        <div id="becker">
+          <span class="tag">Е. Беккер</span>
+          <svg viewBox="0 0 90 110" width="90" height="110">
+            <!-- body + laptop -->
+            <rect x="22" y="62" width="46" height="40" rx="12" fill="#6366f1" stroke="#000" stroke-width="3"/>
+            <rect x="26" y="74" width="38" height="22" rx="3" fill="#cbd5e1" stroke="#000" stroke-width="3"/>
+            <text x="45" y="90" font-size="11" text-anchor="middle">🤖</text>
+            <!-- head -->
+            <circle cx="45" cy="36" r="24" fill="#fcd9b6" stroke="#000" stroke-width="3"/>
+            <path d="M22 30 Q45 2 68 30 Q58 18 45 20 Q32 18 22 30Z" fill="#7c4a2d" stroke="#000" stroke-width="2"/>
+            <!-- headphones -->
+            <path d="M18 38 Q18 8 45 8 Q72 8 72 38" fill="none" stroke="#111" stroke-width="5"/>
+            <rect x="12" y="32" width="10" height="16" rx="4" fill="#ef4444" stroke="#000" stroke-width="2"/>
+            <rect x="68" y="32" width="10" height="16" rx="4" fill="#ef4444" stroke="#000" stroke-width="2"/>
+            <!-- sunglasses -->
+            <rect x="28" y="30" width="15" height="9" rx="3" fill="#111"/>
+            <rect x="47" y="30" width="15" height="9" rx="3" fill="#111"/>
+            <path d="M43 33h4" stroke="#111" stroke-width="3"/>
+            <path id="mouth" d="M36 48 Q45 56 54 48" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <p class="hint">Зажми Беккера мышкой или пальцем, разгонись и отпусти. Попадания подряд дают комбо, каждые 5 попаданий — новый уровень: мусорка начинает ездить, а потом подключается ветер.</p>
+      <button id="reset">Начать заново</button>
+      <button id="mute">🔊 Звук</button>
+    </section>
+  </main>
+
+  <footer>Сделано на 100% вайбах и 0% юнит-тестов · <a href="index.html">другие шедевры</a></footer>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+
+    // ---------- jokes ----------
+    const jokes = [
+      "Евгений Беккер попросил ИИ написать тесты. ИИ написал «всё ок» и тесты прошли.",
+      "Почему Беккер не боится продакшена? Потому что он не знает, что это такое.",
+      "Беккер не читает документацию. Документация читает его промпты и плачет.",
+      "Код Беккера как кот Шрёдингера: пока не задеплоил — он одновременно работает и не работает.",
+      "Беккер написал «исправь все баги». ИИ удалил проект. Багов нет.",
+      "Git blame на проекте Беккера показывает только «Claude».",
+      "Беккер называет Ctrl+Z «машиной времени для вайбкодеров».",
+      "Сеньор пишет код 8 часов. Беккер пишет промпт 8 часов. Результат одинаковый: «у меня работает».",
+      "Беккер говорит, что у него микросервисная архитектура. Просто каждый файл писал другой ИИ.",
+      "Когда у Беккера падает сервер, он пишет ИИ: «вайб упал, подними»."
+    ];
+    let lastJoke = -1;
+    $("laugh").addEventListener("click", () => {
+      let i; do { i = Math.floor(Math.random() * jokes.length); } while (i === lastJoke);
+      lastJoke = i; $("joke").textContent = jokes[i];
+      beep([500, 420, 520, 400], 0.09, "square");
+    });
+
+    // ---------- sound (synthesized, no files) ----------
+    let muted = false, ctx;
+    function beep(freqs, step, type = "sine") {
+      if (muted) return;
+      ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+      freqs.forEach((f, i) => {
+        const t = ctx.currentTime + i * step, o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = type; o.frequency.setValueAtTime(f, t);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + step);
+        o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + step + 0.02);
+      });
+    }
+    $("mute").addEventListener("click", e => { muted = !muted; e.target.textContent = muted ? "🔇 Без звука" : "🔊 Звук"; });
+
+    // ---------- game ----------
+    const field = $("field"), becker = $("becker"), bin = $("bin"), speech = $("speech"), mouth = $("mouth");
+    const BW = 90, BH = 110, BIN_W = 110, BIN_H = 130, GRAVITY = 1600, BOUNCE = 0.5;
+    let x, y, vx, vy, rot = 0, spin = 0, dragging = false, flying = false, done = false;
+    let score = 0, hits = 0, combo = 1, level = 1, best = +localStorage.getItem("beckerBest") || 0;
+    let binX = 0, binDir = 1, wind = 0, trail = [];
+    const updateHud = () => Object.entries({ score, combo, level, best }).forEach(([k, v]) => $(k).textContent = v);
+    updateHud();
+
+    const onGrab = ["Э-э-э, я же сеньор-промптер!", "Только не в мусорку, у меня там старый код!", "ИИ, сделай так, чтобы меня не кидали!", "Давай обсудим это в созвоне?"];
+    const onHit = ["Ну и ладно, тут тоже есть Wi-Fi", "Это не мусорка, это легаси-код!", "Я тут просто рефакторюсь…", "ИИ, сгенерируй мне выход!", "Тут уютнее, чем в моём репозитории", "Ctrl+Z! Ctrl+Z!!!"];
+    const onMiss = ["Ха! Промахнулся, как мой код мимо тестов", "Даже ИИ целится лучше", "Я неуловимый, как баг в проде", "Мимо! Деплой отменяется"];
+
+    const W = () => field.clientWidth, H = () => field.clientHeight, ground = () => H() * 0.78;
+    const smile = () => mouth.setAttribute("d", "M36 48 Q45 56 54 48");
+    const scream = () => mouth.setAttribute("d", "M38 50 Q45 40 52 50 Q45 58 38 50Z");
+
+    function placeBin() {
+      const min = W() * 0.4, max = W() - BIN_W - 15;
+      binX = min + Math.random() * Math.max(0, max - min);
+      bin.style.top = ground() - BIN_H + 18 + "px";
+      drawBin();
+    }
+    const drawBin = () => bin.style.transform = `translateX(${binX}px)`;
+
+    function setWind() {
+      wind = level >= 3 ? Math.round((Math.random() * 2 - 1) * (level - 2) * 120) : 0;
+      $("wind").textContent = wind ? `🌬️ Ветер: ${wind > 0 ? "→" : "←"} ${Math.abs(wind)}` : "";
+    }
+
+    function spawn() {
+      x = 30; y = ground() - BH + 6; vx = vy = 0; rot = 0; spin = 0;
+      flying = false; done = false; becker.style.opacity = 1; smile(); render();
+    }
+    const render = () => becker.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+
+    function pop(text, px, py, color = "#15803d") {
+      const p = document.createElement("div");
+      p.className = "pop"; p.textContent = text; p.style.color = color;
+      p.style.left = px + "px"; p.style.top = py + "px";
+      field.appendChild(p); p.addEventListener("animationend", () => p.remove());
+    }
+    function burst(px, py) {
+      ["🍌", "🥫", "📄", "🦴", "🐟", "💾", "🧦"].forEach(e => {
+        const b = document.createElement("span");
+        b.className = "bit"; b.textContent = e; b.style.left = px + "px"; b.style.top = py + "px";
+        field.appendChild(b);
+        const dx = (Math.random() - .5) * 260, dy = -120 - Math.random() * 160;
+        b.animate([{ transform: "translate(0,0) rotate(0)" }, { transform: `translate(${dx}px, ${dy}px) rotate(${dx * 3}deg)`, opacity: 0 }],
+          { duration: 900, easing: "cubic-bezier(.2,.8,.4,1)" }).onfinish = () => b.remove();
+      });
+    }
+
+    function hit() {
+      done = true; flying = false; hits++;
+      const pts = 100 * combo * level;
+      score += pts; combo = Math.min(combo + 1, 10);
+      if (hits % 5 === 0) { level++; pop(`УРОВЕНЬ ${level}!`, W() / 2 - 70, 90, "#7c3aed"); }
+      if (score > best) { best = score; localStorage.setItem("beckerBest", best); }
+      updateHud();
+      speech.textContent = "Беккер: " + pick(onHit);
+      becker.style.opacity = 0;
+      bin.classList.remove("open");
+      bin.animate([{ transform: `translateX(${binX}px)` }, { transform: `translateX(${binX}px) scale(1.15, .9)` }, { transform: `translateX(${binX}px)` }], { duration: 300 });
+      pop(`+${pts}`, binX + 20, parseFloat(bin.style.top) - 30);
+      burst(binX + 45, parseFloat(bin.style.top) + 20);
+      beep([300, 200, 140], 0.08, "triangle"); setTimeout(() => beep([660, 880, 1100], 0.08), 250);
+      setTimeout(() => { placeBin(); setWind(); spawn(); }, 900);
+    }
+    function miss() {
+      done = true; flying = false; combo = 1; $("combo").textContent = 1;
+      speech.textContent = "Беккер: " + pick(onMiss);
+      pop("Мимо!", x, y - 20, "#b91c1c"); smile();
+      beep([300, 250, 200], 0.15, "sawtooth");
+      setTimeout(spawn, 700);
+    }
+
+    let last = performance.now();
+    function tick(t) {
+      const dt = Math.min((t - last) / 1000, 0.03); last = t;
+      if (level >= 2 && !done) {
+        binX += binDir * (40 + level * 25) * dt;
+        const min = W() * 0.35, max = W() - BIN_W - 10;
+        if (binX < min || binX > max) { binDir *= -1; binX = Math.max(min, Math.min(max, binX)); }
+        drawBin();
+      }
+      if (flying && !done) {
+        vy += GRAVITY * dt; vx += wind * dt;
+        x += vx * dt; y += vy * dt; rot += spin * dt;
+        if (x < 0) { x = 0; vx = -vx * BOUNCE; }
+        if (x > W() - BW) { x = W() - BW; vx = -vx * BOUNCE; }
+        if (y < 0) { y = 0; vy = -vy * BOUNCE; }
+
+        const cx = x + BW / 2, cy = y + BH / 2, top = parseFloat(bin.style.top) + 20;
+        const near = cx > binX - 20 && cx < binX + BIN_W + 20 && cy > top - 160 && cy < top + 40;
+        bin.classList.toggle("open", near);
+        // Score when his center drops into the bin mouth while falling.
+        if (vy > 0 && cx > binX + 12 && cx < binX + BIN_W - 12 && cy > top - 10 && cy < top + 50) hit();
+        else if (y + BH >= ground() + 10) {
+          y = ground() + 10 - BH; vy = -vy * BOUNCE; vx *= 0.7; spin *= 0.6;
+          if (Math.abs(vy) < 140) { bin.classList.remove("open"); miss(); }
+          else beep([180], 0.06, "triangle");
+        }
+        render();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    becker.addEventListener("pointerdown", e => {
+      if (flying || done) return;
+      dragging = true; becker.setPointerCapture(e.pointerId); becker.style.cursor = "grabbing";
+      trail = []; scream(); speech.textContent = "Беккер: " + pick(onGrab);
+      beep([700, 900], 0.06, "square");
+    });
+    becker.addEventListener("pointermove", e => {
+      if (!dragging) return;
+      const f = field.getBoundingClientRect();
+      x = Math.max(0, Math.min(W() - BW, e.clientX - f.left - BW / 2));
+      y = Math.max(0, Math.min(ground() - BH + 6, e.clientY - f.top - BH / 2));
+      trail.push({ x, y, t: performance.now() }); if (trail.length > 6) trail.shift();
+      rot = Math.sin(performance.now() / 60) * 10; render();
+    });
+    becker.addEventListener("pointerup", () => {
+      if (!dragging) return;
+      dragging = false; becker.style.cursor = "grab";
+      if (trail.length >= 2) {
+        const a = trail[0], b = trail[trail.length - 1], dt = Math.max((b.t - a.t) / 1000, 0.016);
+        vx = Math.max(-2600, Math.min(2600, (b.x - a.x) / dt));
+        vy = Math.max(-2600, Math.min(2600, (b.y - a.y) / dt));
+      } else vx = vy = 0;
+      spin = vx * 0.6; flying = true;
+      speech.textContent = "Беккер: Аааа! Мой вайб!";
+      beep([900, 700, 500, 350], 0.07, "sawtooth");
+    });
+
+    $("reset").addEventListener("click", () => {
+      score = hits = 0; combo = level = 1;
+      updateHud();
+      speech.textContent = "Хватай Беккера и швыряй в мусорку!";
+      placeBin(); setWind(); spawn();
+    });
+
+    placeBin(); setWind(); spawn();
+    requestAnimationFrame(tick);
+    window.addEventListener("resize", () => { placeBin(); if (!flying) spawn(); });
+  </script>
+</body>
+</html>
