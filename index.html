@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zheka Vibcoder Is a Cool Guy 😎</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Comic Sans MS", "Comic Neue", system-ui, sans-serif;
+      min-height: 100vh;
+      color: #fff;
+      background: linear-gradient(135deg, #ff6ec4, #7873f5, #4ade80, #facc15);
+      background-size: 400% 400%;
+      animation: bg 12s ease infinite;
+      overflow-x: hidden;
+      text-align: center;
+    }
+    @keyframes bg { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+    header { padding: 4rem 1rem 2rem; }
+    .shades { font-size: 6rem; display: inline-block; animation: bounce 1.2s infinite; }
+    @keyframes bounce { 0%,100% { transform: translateY(0) rotate(-5deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+    h1 { font-size: clamp(2.2rem, 7vw, 5rem); text-shadow: 4px 4px 0 #000; margin-top: 1rem; }
+    h1 .name { color: #facc15; }
+    .tag { font-size: 1.3rem; margin-top: 1rem; text-shadow: 2px 2px 0 #000; }
+
+    main { max-width: 900px; margin: 0 auto; padding: 1rem; }
+    section {
+      background: rgba(0,0,0,.35);
+      border: 3px dashed #fff;
+      border-radius: 24px;
+      padding: 2rem;
+      margin: 2rem 0;
+    }
+    h2 { font-size: 2rem; margin-bottom: 1rem; }
+
+    .facts { list-style: none; display: grid; gap: .8rem; text-align: left; }
+    .facts li { background: rgba(255,255,255,.15); padding: .8rem 1rem; border-radius: 12px; font-size: 1.1rem; }
+
+    button {
+      font: inherit; font-size: 1.5rem; font-weight: bold;
+      padding: 1rem 2rem; border: none; border-radius: 999px; cursor: pointer;
+      background: #facc15; color: #000; box-shadow: 0 6px 0 #a16207;
+      transition: transform .1s;
+    }
+    button:active { transform: translateY(4px); box-shadow: 0 2px 0 #a16207; }
+    #joke { font-size: 1.3rem; min-height: 3.5em; margin: 1.5rem 0; }
+    #counter { margin-top: 1rem; font-size: 1.1rem; }
+
+    .meter { height: 30px; background: rgba(255,255,255,.2); border-radius: 999px; overflow: hidden; margin-top: 1rem; }
+    .meter div { height: 100%; width: 100%; background: linear-gradient(90deg,#4ade80,#facc15,#ff6ec4); animation: overflow 2s ease-in-out infinite alternate; }
+    @keyframes overflow { from { width: 95%; } to { width: 100%; } }
+
+    .emoji { position: fixed; top: -60px; font-size: 2.5rem; pointer-events: none; animation: fall linear forwards; z-index: 10; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+    footer { padding: 2rem 1rem 3rem; font-size: .95rem; text-shadow: 1px 1px 0 #000; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shades">😎</div>
+    <h1><span class="name">Zheka Vibcoder</span><br />is a cool guy</h1>
+    <p class="tag">Scientifically proven. Peer-reviewed by his own vibes.</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>📜 Verified Facts About Zheka</h2>
+      <ul class="facts">
+        <li>🤖 Zheka doesn't write code. He describes the vibe and the code shows up.</li>
+        <li>🐛 Bugs don't crash Zheka's apps. They ask for permission first.</li>
+        <li>☕ His coffee compiles before it cools down.</li>
+        <li>🎧 Stack Overflow asks Zheka for answers.</li>
+        <li>🚀 His only commit message is "vibes" and every reviewer approves it.</li>
+        <li>😴 Zheka once took a nap and his AI shipped three features.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>😂 Laugh Generator 3000</h2>
+      <p id="joke">Press the button. Laughter is guaranteed (no refunds).</p>
+      <button id="laugh">HA HA HA 🤣</button>
+      <p id="counter">Laughs generated: 0</p>
+    </section>
+
+    <section>
+      <h2>📊 Coolness Meter</h2>
+      <p>Measuring Zheka's coolness... ERROR: value too high.</p>
+      <div class="meter"><div></div></div>
+    </section>
+  </main>
+
+  <footer>Made with 100% vibes and 0% unit tests · © Zheka Vibcoder Fan Club</footer>
+
+  <script>
+    const jokes = [
+      "Why did Zheka cancel his gym membership? His code already does all the heavy lifting.",
+      "Zheka's AI asked for a raise. He vibed back: 'No.' It said 'Fair.'",
+      "A bug walked into Zheka's repo. It left as a feature.",
+      "Zheka doesn't use dark mode. Dark mode uses Zheka.",
+      "Why don't programmers like nature? Too many bugs. Zheka just prompts them away.",
+      "Zheka's git history is one commit: 'it works, don't touch it'.",
+      "There are 10 kinds of people: those who understand binary, and Zheka, who has the AI explain it.",
+      "Zheka tried writing code by hand once. The keyboard asked if he was okay.",
+      "Why was the JavaScript dev sad? He didn't know how to 'null' his feelings. Zheka just vibes.",
+      "Zheka's code has no bugs. It just has surprise features."
+    ];
+    const emojis = ["😂", "🤣", "😆", "😹", "😎", "🔥", "💯", "🕺"];
+    let count = 0, last = -1;
+
+    // Synthesized "ha ha ha" so the site needs no audio files.
+    function laughSound() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      for (let i = 0; i < 5; i++) {
+        const t = ctx.currentTime + i * 0.16;
+        const osc = ctx.createOscillator(), gain = ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(420 - i * 25, t);
+        osc.frequency.exponentialRampToValueAtTime(260 - i * 20, t + 0.12);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t); osc.stop(t + 0.14);
+      }
+      setTimeout(() => ctx.close(), 1200);
+    }
+
+    function emojiRain() {
+      for (let i = 0; i < 30; i++) {
+        const e = document.createElement("span");
+        e.className = "emoji";
+        e.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        e.style.left = Math.random() * 100 + "vw";
+        e.style.animationDuration = 2 + Math.random() * 2 + "s";
+        e.style.animationDelay = Math.random() * 0.8 + "s";
+        document.body.appendChild(e);
+        e.addEventListener("animationend", () => e.remove());
+      }
+    }
+
+    document.getElementById("laugh").addEventListener("click", () => {
+      let i;
+      do { i = Math.floor(Math.random() * jokes.length); } while (i === last);
+      last = i;
+      document.getElementById("joke").textContent = jokes[i];
+      document.getElementById("counter").textContent = `Laughs generated: ${++count}`;
+      laughSound();
+      emojiRain();
+    });
+  </script>
+</body>
+</html>
